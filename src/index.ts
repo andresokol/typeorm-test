@@ -32,6 +32,8 @@ createConnection({
 
 app.get('/', handlers.getAllTasks);
 app.post('/task', handlers.createTask);
+app.post('/task/update/name', handlers.updateTaskName);
+app.post('/task/update/status', handlers.updateTaskStatus);
 
 app.listen(5000, () => {
     console.log("server started");

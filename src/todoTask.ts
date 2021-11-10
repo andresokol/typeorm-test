@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 
 @Entity()
 export class TodoTask {
@@ -10,4 +10,10 @@ export class TodoTask {
 
     @Column({default: false})
     isCompleted: boolean;
+
+    @Column({default: "now()"})
+    createdAt: Date;
+
+    @Column({default: "now()"})
+    modifiedAt: Date;
 }
