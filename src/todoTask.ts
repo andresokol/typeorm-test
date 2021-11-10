@@ -1,9 +1,9 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn} from "typeorm";
 
 @Entity()
 export class TodoTask {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn("rowid")
+    id: string;
 
     @Column()
     name: string;
@@ -11,9 +11,12 @@ export class TodoTask {
     @Column({default: false})
     isCompleted: boolean;
 
-    @Column({default: "now()"})
+    @Column({unique: true})
+    idempotencyKey: string;
+
+    @CreateDateColumn()
     createdAt: Date;
 
-    @Column({default: "now()"})
+    @UpdateDateColumn()
     modifiedAt: Date;
 }

@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {getManager} from "typeorm";
+import {getManager, QueryFailedError} from "typeorm";
 
 import {TodoTask} from "./todoTask";
 
@@ -10,20 +10,40 @@ async function getAllTasks(request: Request, response: Response) {
 }
 
 async function createTask(request: Request, response: Response) {
-    let task = new TodoTask();
-    task.name = request.body.task_name;
-
-    console.log("New task:", task);
-
-    if (!task.name) {
+    const {taskName, idempotencyKey} = request.body;
+    if (!taskName) {
         response.status(400);
-        response.send("missing task_name");
+        response.send({error: "missing taskName"});
+        return;
+    }
+    if (!idempotencyKey) {
+        response.status(400);
+        response.send({error: "missing idempotencyKey"});
         return;
     }
 
-    const writtenTask = await getManager().save(task);
 
-    response.send({status: "ok", task: writtenTask});
+    let task = new TodoTask();
+    task.name = taskName;
+    task.idempotencyKey = idempotencyKey;
+
+    console.log("New task:", task);
+
+    const newTaskId = await getManager()
+        .createQueryBuilder()
+        .insert()
+        .into(TodoTask)
+        .values(task)
+        .orIgnore('idempotencyKey')
+        .returning(['id'])
+        .execute();
+
+    if (newTaskId) {
+        console.log('Idempotency key problem, looks like problem');
+    }
+
+    response.send({status: 'ok'});
+    return;
 }
 
 async function updateTaskName(request: Request, response: Response) {
