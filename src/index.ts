@@ -30,7 +30,7 @@ createConnection({
 }).catch(error => console.log(error));
 
 
-app.get('/', handlers.getAllTasks);
+app.get('/tasks', handlers.getAllTasks);
 app.post('/task', handlers.createTask);
 app.post('/task/update/name', handlers.updateTaskName);
 app.post('/task/update/status', handlers.updateTaskStatus);
