@@ -1,7 +1,9 @@
 import {Request, Response} from "express";
-import {getManager, QueryFailedError} from "typeorm";
+import {getManager} from "typeorm";
 
 import {TodoTask} from "./todoTask";
+
+const INTERVAL_TO_RESOLVE_COLLISIONS_MS = 60 * 60 * 1000; // 1 hour
 
 async function getAllTasks(request: Request, response: Response) {
     const repository = getManager().getRepository(TodoTask);
@@ -29,7 +31,7 @@ async function createTask(request: Request, response: Response) {
 
     console.log("New task:", task);
 
-    const newTaskId = await getManager()
+    const insertResult = await getManager()
         .createQueryBuilder()
         .insert()
         .into(TodoTask)
@@ -38,12 +40,29 @@ async function createTask(request: Request, response: Response) {
         .returning(['id'])
         .execute();
 
-    if (newTaskId) {
-        console.log('Idempotency key problem, looks like problem');
+    if (insertResult.raw.length !== 0) {
+        console.log("Successfully created new task", task);
+        response.send({status: "ok", task});
+        return;
     }
 
-    response.send({status: 'ok', task});
-    return;
+    const competingTask = await getManager()
+        .getRepository(TodoTask)
+        .findOne({where: {idempotencyKey: idempotencyKey}});
+
+    console.log("Idempotency key collision, competing item =", competingTask);
+    const msSinceCreation = Date.now() - competingTask.createdAt.getTime();
+    console.log("Since creation:", msSinceCreation, "ms");
+
+    if (competingTask.name != taskName || msSinceCreation > INTERVAL_TO_RESOLVE_COLLISIONS_MS) {
+        console.error("Other task considered different, either name is different or other item is too old");
+        response.status(500);
+        response.send({status: "error", details: "idempotency key collision"});
+        return;
+    }
+
+    console.log("Other task considered same");
+    response.send({status: "ok", task: competingTask});
 }
 
 async function updateTaskName(request: Request, response: Response) {

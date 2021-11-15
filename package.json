@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node src/index.ts",
-    "start": "ts-node dist/index.js",
-    "build": "tsc -p ."
+    "start": "ts-node src/index.ts",
+    "build": "cd frontend && npm i && npm run build"
   },
   "keywords": [],
   "author": "",
