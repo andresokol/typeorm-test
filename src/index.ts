@@ -6,13 +6,11 @@ import {createConnection} from "typeorm";
 import {TodoTask} from "./todoTask";
 import handlers from "./handlers";
 
+const PORT = process.env.PORT || 5000;
+
 createConnection({
     type: "postgres",
-    host: "localhost",
-    port: 5432,
-    username: "andresokol",
-    password: "password",
-    database: "spokeai",
+    url: process.env.DATABASE || "postgres://andresokol:password@localhost:5432/spokeai",
     entities: [
         TodoTask,
     ],

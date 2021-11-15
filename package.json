@@ -5,8 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "build": "cd frontend && npm i && npm run build"
+    "heroku-postbuild": "cd frontend && npm i && npm run build"
   },
+  "cacheDirectories": [
+    "node_modules",
+    "frontend/node_modules",
+    "frontend/build"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
