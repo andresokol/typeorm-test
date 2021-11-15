@@ -7,10 +7,14 @@ import {TodoTask} from "./todoTask";
 import handlers from "./handlers";
 
 const PORT = process.env.PORT || 5000;
+const DATABASE_URL = process.env.DATABASE_URL
+    ? `${process.env.DATABASE_URL}?ssl=true` // quick workaround for heroku :(
+    : "postgres://andresokol:password@localhost:5432/spokeai";
+
 
 createConnection({
     type: "postgres",
-    url: process.env.DATABASE_URL || "postgres://andresokol:password@localhost:5432/spokeai",
+    url: DATABASE_URL,
     entities: [
         TodoTask,
     ],
@@ -31,9 +35,8 @@ createConnection({
     app.post('/task/update/name', handlers.updateTaskName);
     app.post('/task/update/status', handlers.updateTaskStatus);
 
-    const port = 5000;
-    app.listen(port, () => {
-        console.log("Server started at port", 5000);
-        console.log(`http://0.0.0.0:${port}`);
+    app.listen(PORT, () => {
+        console.log("Server started at port", PORT);
+        console.log(`http://0.0.0.0:${PORT}`);
     });
 }).catch(error => console.log(error));
