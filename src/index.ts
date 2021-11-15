@@ -7,14 +7,10 @@ import {TodoTask} from "./todoTask";
 import handlers from "./handlers";
 
 const PORT = process.env.PORT || 5000;
-const DATABASE_URL = process.env.DATABASE_URL
-    ? `${process.env.DATABASE_URL}` // quick workaround for heroku :(
-    : "postgres://andresokol:password@localhost:5432/spokeai";
-
 
 createConnection({
     type: "postgres",
-    url: DATABASE_URL,
+    url: process.env.DATABASE_URL || "postgres://andresokol:password@localhost:5432/spokeai",
     entities: [
         TodoTask,
     ],

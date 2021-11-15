@@ -7,7 +7,7 @@ const INTERVAL_TO_RESOLVE_COLLISIONS_MS = 60 * 60 * 1000; // 1 hour
 
 async function getAllTasks(request: Request, response: Response) {
     const repository = getManager().getRepository(TodoTask);
-    const tasks = await repository.find();
+    const tasks = await repository.find({order: {createdAt: "DESC"}});
     response.send({tasks});
 }
 
