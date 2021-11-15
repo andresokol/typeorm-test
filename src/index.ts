@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 
 createConnection({
     type: "postgres",
-    url: process.env.DATABASE || "postgres://andresokol:password@localhost:5432/spokeai",
+    url: process.env.DATABASE_URL || "postgres://andresokol:password@localhost:5432/spokeai",
     entities: [
         TodoTask,
     ],
