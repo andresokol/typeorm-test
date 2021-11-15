@@ -29,18 +29,18 @@ async function createTask(request: Request, response: Response) {
 
     console.log("New task:", task);
 
-    await getManager()
+    const newTaskId = await getManager()
         .createQueryBuilder()
         .insert()
         .into(TodoTask)
         .values(task)
         .orIgnore('idempotencyKey')
-        .returning(['*'])
+        .returning(['id'])
         .execute();
 
-    // if (newTaskId) {
-    //     console.log('Idempotency key problem, looks like problem');
-    // }
+    if (newTaskId) {
+        console.log('Idempotency key problem, looks like problem');
+    }
 
     response.send({status: 'ok', task});
     return;

@@ -6,6 +6,8 @@ import {store, fetchTasksThunk} from "../../app/store";
 import {TodoTask} from "./TodoListSlice";
 import TodoListInput from "./TodoListInput";
 
+import styles from "./TodoList.module.css";
+
 
 const mapStateToProps = (state: any) => ({
     tasks: state.todoList.tasks,
@@ -25,7 +27,7 @@ class TodoList extends Component<ConnectedProps<typeof connector>, never> {
             return <></>;
         }
 
-        return <div>
+        return <div className={styles.container}>
             <TodoListInput/>
             <div>
                 {tasks.flatMap(((value: TodoTask) => <TodoListTask key={value.id} task={value}/>))}

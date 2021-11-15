@@ -1,13 +1,13 @@
 import React from 'react';
-// import logo from './logo.svg';
-// import {Counter} from './features/counter/Counter';
-// import './App.css';
+
+import './App.css';
+
 import TodoList from "./features/todolist/TodoList";
 
 function App() {
     return (
-        <div className="App">
-            <h1>To Do list</h1>
+        <div>
+            <h1 style={{textAlign: "center", fontSize: "3em", marginTop: "1em"}}>To Do list</h1>
             <TodoList/>
         </div>
     );

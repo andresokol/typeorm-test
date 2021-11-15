@@ -1,5 +1,7 @@
 import React, {Component} from "react";
 
+import styles from './TodoList.module.css';
+
 import {store, updateTaskName, updateTaskStatus} from "../../app/store";
 import {TodoTask} from "./TodoListSlice";
 
@@ -58,26 +60,29 @@ class TodoListTask extends Component<TodoListTaskProps, TodoListTaskState> {
         const {name} = this.state;
         const {task: {isCompleted}} = this.props;
 
-        return <div style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            // border: "1px solid black",
-        }}>
+        let textInputClassName = styles.text_input;
+        if (isCompleted) {
+            textInputClassName += " " + styles.text_input__completed;
+        }
 
-            <input type="checkbox" checked={isCompleted} readOnly onChange={() => this.handleCheckBox()}/>
+        return <div className={styles.row_container}>
+            <div className={styles.checkbox_wrapper}>
+                <input
+                    type="checkbox"
+                    className={styles.checkbox}
+                    checked={isCompleted}
+                    readOnly
+                    onChange={() => this.handleCheckBox()}
+                />
+            </div>
 
             <input
                 type="text"
+                className={textInputClassName}
                 value={name}
                 onKeyPress={(e) => this.handleInputKeyPress(e)}
                 onChange={(e) => this.handleInputChange(e)}
                 onBlur={() => this.saveNewName()}
-                style={{
-                    border: "none",
-                    borderBottom: "1px solid black",
-                    padding: "1em",
-                }}
             />
         </div>
     }
