@@ -1,2 +1,0 @@
-# Spoke AI coding challenge
-
